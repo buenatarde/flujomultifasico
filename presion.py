@@ -12,7 +12,13 @@ def run():
     else:
         print("\nUsted eligio calcular el valor de la presion en fondo de pozo")
     
-    
+    Profundidad = float(input("\n¿Cual es la profundidad en pies total del pozo?:\t"))
+    Ti = float(input("\n¿Cual es la temperatura inical en Farenheit del pozo?:\t"))
+    PresionInicial = float(input("\n¿Cual es la presion en psia del pozo?:\t"))
+
+def propiedades_vazquez():
+    pass
+
 
 if __name__ == "__main__":
     run ()
