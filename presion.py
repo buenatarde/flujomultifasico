@@ -19,7 +19,7 @@ def run():
     Profundidad = float(Profundidad)
 
     Ti = input("\n¿Cual es la temperatura inical en Farenheit del pozo?:\t")
-    assert Ti.isnumeric(), "\n\nPor favor ingresa valores numericos"
+    assert Ti.isdecimal(), "\n\nPor favor ingresa valores numericos"
     Ti = float(Ti)
 
     PresionInicial = input("\n¿Cual es la presion en psia del pozo?:\t")
