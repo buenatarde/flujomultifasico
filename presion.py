@@ -14,8 +14,9 @@ def run():
     else:
         print("\nUsted eligio calcular el valor de la presion en fondo de pozo")
     
-    Profundidad = input("\n¿Cual es la profundidad en pies total del pozo?:\t")
-    assert Profundidad.isnumeric(), "\n\nPor favor ingresa valores numericos"
+    print("\nEn las siguientes peticiones por favor llenarla con numeros enteros o decimales\n")
+
+    Profundidad = float(input("\n¿Cual es la profundidad en pies total del pozo?:\t"))
     Profundidad = float(Profundidad)
 
     Ti = input("\n¿Cual es la temperatura inical en Farenheit del pozo?:\t")
