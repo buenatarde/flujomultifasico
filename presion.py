@@ -14,27 +14,35 @@ def run():
     
     print("\nEn las siguientes peticiones por favor llenarla con numeros enteros o decimales\n")
 
-    Profundidad = input("\n¿Cual es la profundidad en pies total del pozo?:\t")
-    assert Profundidad.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
-    Profundidad = float(Profundidad)
+    profundidad = input("\n¿Cual es la profundidad en pies total del pozo?:\t")
+    assert profundidad.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    profundidad = float(profundidad)
 
-    Ti = input("\n¿Cual es la temperatura inical en Farenheit del pozo?:\t")
-    assert Ti.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
-    Ti = float(Ti)
+    ti_cabeza = input("\n¿Cual es la temperatura de cabeza en grados Farenheit del pozo?:\t")
+    assert ti_cabeza.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    ti_cabeza = float(ti_cabeza)
 
-    PresionInicial = input("\n¿Cual es la presion en psia del pozo?:\t")
-    assert PresionInicial.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
-    PresionInicial = float(PresionInicial)
+    ti_fondo = input("\n¿Cual es la temperatura de fondo en grados Farenheit del pozo?:\t")
+    assert ti_fondo.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    ti_fondo = float(ti_fondo)
 
-    Qo = input("\n¿Cual es el gasto de aceite en barriles por dia del pozo?:\t")
-    assert Qo.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
-    Qo = float(Qo)
+    presion_cabeza = input("\n¿Cual es la presion en psia del pozo?:\t")
+    assert presion_cabeza.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    presion_cabeza = float(presion_cabeza)
+
+    qo = input("\n¿Cual es el gasto de aceite en barriles por dia del pozo?:\t")
+    assert qo.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    qo = float(qo)
 
     ygt = input("\n¿Cual es la densidad relativa del gas total (los valores van entre 0 y 1)?:\t")
     assert ygt.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos o valores dentro del rango"
     ygt = float(ygt)
     assert ygt >= float(0.0) and ygt <= float(1.0), "\n\nPor favor ingresa valores dentro del rango"
-       
+    
+    rugosidad = input("\n¿Cual es la rugosidad de la tuberia?:\t")
+    assert rugosidad.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    rugosidad = float(rugosidad)
+    assert rugosidad >= float(0.0) and rugosidad <= float(1.0), "\n\nPor favor ingresa valores dentro del rango"   
 
 def propiedades_vazquez():
     pass
