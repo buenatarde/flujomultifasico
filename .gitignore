@@ -1,3 +1,4 @@
 #FlujoMultifasico/
 venv/
 *.pdf
+*.ipynb
