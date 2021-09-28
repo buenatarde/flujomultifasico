@@ -21,7 +21,7 @@ def run():
 
     #Se empiezan a pedir los inputs del usuario los cuales se usaran para tener datos con que trabajar el modelo de presion en un pozo
 
-#Primero se pedira las caracterisitcas del pozo 
+    #Primero se pedira las caracterisitcas del pozo 
     profundidad = input("\n¿Cual es la profundidad en pies total del pozo?:\t")
     assert profundidad.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     profundidad = float(profundidad)
@@ -30,7 +30,7 @@ def run():
     assert celda.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     celda = float(celda)
 
-#Se pediran las propiedades inicales como presion o temperatura
+    #Se pediran las propiedades inicales como presion o temperatura
     ti_cabeza = input("\n¿Cual es la temperatura de cabeza en grados Farenheit del pozo?:\t")
     assert ti_cabeza.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     ti_cabeza = float(ti_cabeza)
@@ -43,7 +43,7 @@ def run():
     assert presion_cabeza.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     presion_cabeza = float(presion_cabeza)
 
-#Se pedira los datos referentes al aceite o al gas
+    #Se pedira los datos referentes al aceite o al gas
     qo = input("\n¿Cual es el gasto de aceite en barriles por dia del pozo?:\t")
     assert qo.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     qo = float(qo)
@@ -93,7 +93,7 @@ def run():
         print(celdas)
         propiedades_standing
 
-#Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
+    #Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
     pendiente = profundidad/(ti_fondo-ti_cabeza)
 
     constanteT = -pendiente*ti_cabeza
