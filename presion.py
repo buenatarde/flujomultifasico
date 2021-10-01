@@ -77,6 +77,12 @@ def run():
     
     metodo = int(metodo)
     
+    #Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
+    pendiente = profundidad/(ti_fondo-ti_cabeza)
+
+    constanteT = -pendiente*ti_cabeza
+    #sACARA EL ARREGLO DE CELDAS AL IGUAL QUE LA DETERMINACION DE LA TEMPERATURA DE LOS METODOS YA QUE INDEPENDIENTEMENETE DE CUAL ELIJAN NO CAMBAI
+
     if metodo == 1:
         print("\nUsted eligio calcular las propiedades de los fluidos por el metodo de Vazquez")
         celda = int(celda)
@@ -92,10 +98,6 @@ def run():
         print(celdas)
         propiedades_standing
 
-    #Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
-    pendiente = profundidad/(ti_fondo-ti_cabeza)
-
-    constanteT = -pendiente*ti_cabeza
 
 
 def propiedades_vazquez(profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,qo,api,ygt,rga,rugosidad,pendiente,constanteT):
