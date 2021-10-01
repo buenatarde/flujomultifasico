@@ -79,7 +79,6 @@ def run():
     
     if metodo == 1:
         print("\nUsted eligio calcular las propiedades de los fluidos por el metodo de Vazquez")
-        profundidad = int(profundidad)
         celda = int(celda)
         celdas = np.linspace(0,profundidad,celda)
         print(celdas)
