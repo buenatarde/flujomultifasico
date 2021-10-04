@@ -17,20 +17,26 @@ def run():
     else:
         print("\nUsted eligio calcular el valor de la presion en fondo de pozo")
     
+    error =  input("\n¿Que error es el aceptable para usted en porcentaje?:\t")
+    assert error.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    error = float(error)
+    error = error/100
+
+
     print("\nEn las siguientes peticiones por favor llenarla con numeros enteros o decimales\n")
 
-    #Se empiezan a pedir los inputs del usuario los cuales se usaran para tener datos con que trabajar el modelo de presion en un pozo
+#Se empiezan a pedir los inputs del usuario los cuales se usaran para tener datos con que trabajar el modelo de presion en un pozo
 
     #Primero se pedira las caracterisitcas del pozo 
     profundidad = input("\n¿Cual es la profundidad en pies total del pozo?:\t")
     assert profundidad.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     profundidad = float(profundidad)
 
-    celda = input("\n¿Cual es el tamaño de la celda en pies que quieres?:\t")
-    assert celda.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
-    celda = float(celda)
+    celda = input("\n¿En cuantas celdas quieres que se divida el pozo para su analisis? (numeros enteros):\t")
+    assert celda.isnumeric(), "\n\nPor favor ingresa valores numericos que sean enteros"
+    celda = int(celda)
 
-    #Se pediran las propiedades inicales como presion o temperatura
+#Se pediran las propiedades inicales como presion o temperatura
     ti_cabeza = input("\n¿Cual es la temperatura de cabeza en grados Farenheit del pozo?:\t")
     assert ti_cabeza.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     ti_cabeza = float(ti_cabeza)
@@ -43,7 +49,7 @@ def run():
     assert presion_cabeza.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     presion_cabeza = float(presion_cabeza)
 
-    #Se pedira los datos referentes al aceite o al gas
+#Se pedira los datos referentes al aceite o al gas
     qo = input("\n¿Cual es el gasto de aceite en barriles por dia del pozo?:\t")
     assert qo.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     qo = float(qo)
@@ -68,35 +74,36 @@ def run():
     rugosidad = float(rugosidad)
     assert rugosidad >= float(0.0), "\n\nPor favor ingresa valores dentro del rango"   
 
-    
+ 
+#Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
+    pendiente = profundidad/(ti_fondo-ti_cabeza)
+
+    constanteT = -pendiente*ti_cabeza
+    #SACAR EL ARREGLO DE CELDAS AL IGUAL QUE LA DETERMINACION DE LA TEMPERATURA DE LOS METODOS YA QUE INDEPENDIENTEMENETE DE CUAL ELIJAN NO CAMBAI
+    celdas = np.linspace(0,profundidad,celda)
+        
     print("A continuacion favor de elegir el metodo por el cual se calculara las propiedades de los fluidos")
     print("\nSi usted quiere usar el metodo de vazquez elija 1 si quiere usar el de Stnading elija 2")
     
     metodo = input("\nDeme su eleccion [1] o [2]:\t")
     assert metodo.isnumeric() and int(metodo) >= 1 and int(metodo) <= 2, "\nFavor de Ingresar un numero que sea 0 o 1"
-    
     metodo = int(metodo)
-    
-    #Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
-    pendiente = profundidad/(ti_fondo-ti_cabeza)
-
-    constanteT = -pendiente*ti_cabeza
-    #sACARA EL ARREGLO DE CELDAS AL IGUAL QUE LA DETERMINACION DE LA TEMPERATURA DE LOS METODOS YA QUE INDEPENDIENTEMENETE DE CUAL ELIJAN NO CAMBAI
 
     if metodo == 1:
         print("\nUsted eligio calcular las propiedades de los fluidos por el metodo de Vazquez")
-        celda = int(celda)
-        celdas = np.linspace(0,profundidad,celda)
-        print(celdas)
         propiedades_vazquez
 
     else:
         print("\nUsted eligio calcular las propiedades por el metodo de Standing")
-        profundidad = int(profundidad)
-        celda = int(celda)
-        celdas = np.linspace(0,profundidad,celda)
-        print(celdas)
         propiedades_standing
+    
+    T=[]
+#Comienza el programa MAIN
+    errorexp=1
+    while errorexp < error:
+        for i in celdas:
+            T[0]=ti_cabeza
+            pass
 
 
 
@@ -105,6 +112,10 @@ def propiedades_vazquez(profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,
 
 
 def propiedades_standing(profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,qo,api,ygt,rga,rugosidadpendiente,constanteT):
+    pass
+
+
+def beggs():
     pass
 
 
