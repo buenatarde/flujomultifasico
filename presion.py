@@ -91,13 +91,14 @@ def run():
 
     if metodo == 1:
         print("\nUsted eligio calcular las propiedades de los fluidos por el metodo de Vazquez")
-        propiedades_vazquez
+        propiedades_vazquez #Quitar las propiedades aqui afuera y solo decirle una vez al usuario que metodo eligio 
 
     else:
         print("\nUsted eligio calcular las propiedades por el metodo de Standing")
         propiedades_standing
     
-    T=[]
+    T = []
+    P = []
 #Comienza el programa MAIN
     errorexp=1
     while errorexp < error:
@@ -107,11 +108,21 @@ def run():
 
 
 
-def propiedades_vazquez(profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,qo,api,ygt,rga,rugosidad,pendiente,constanteT):
-    pass
+def propiedades_vazquez (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugosidad,pendiente,constanteT):
+    if api>30:
+        C1 = 0.0178; C2 = 1.187; C3 = 23.931;
+        Pb = (((rga*np.exp(-C3*(api/t+460)))/(C1*ygt)))*(1/C2)
+        ygd = []
+        rs = []
+        for i in range (0,6):
+            ygd [0]=ygt
+            rs[i+1] =ygd[i]*C1*(p**C2)*np.exp(C3*(api/t+460))
+            ygd[i+1] = .25+.02*api+((rs[i+1]*.000001)*(0.6874-(3.5864*api)))
+        ygl = ((rga*ygt)-(rs[6]*ygd[6])/(rga-rs[6]))
 
 
-def propiedades_standing(profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,qo,api,ygt,rga,rugosidadpendiente,constanteT):
+
+def propiedades_standing (profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,qo,api,ygt,rga,rugosidadpendiente,constanteT):
     pass
 
 
