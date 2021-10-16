@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib as plt
 import pandas as pd
 
+from prueba import Bo
+
 
 def run():
     print("Este codigo realizara los calculos necesarios para determinar la presion en cabeza o en fondo dependiendo lo que usted requiera")
@@ -97,8 +99,8 @@ def run():
         print("\nUsted eligio calcular las propiedades por el metodo de Standing")
         propiedades_standing
     
-    T = []
-    P = []
+    T = np.zeros(len(celdas))
+    P = np.zeros(len(celdas))
 #Comienza el programa MAIN
     errorexp=1
     while errorexp < error:
@@ -111,19 +113,68 @@ def run():
 def propiedades_vazquez (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugosidad,pendiente,constanteT):
     if api>30:
         C1 = 0.0178; C2 = 1.187; C3 = 23.931;
-        Pb = (((rga*np.exp(-C3*(api/t+460)))/(C1*ygt)))*(1/C2)
-        ygd = []
-        rs = []
-        for i in range (0,6):
-            ygd [0]=ygt
-            rs[i+1] =ygd[i]*C1*(p**C2)*np.exp(C3*(api/t+460))
-            ygd[i+1] = .25+.02*api+((rs[i+1]*.000001)*(0.6874-(3.5864*api)))
-        ygl = ((rga*ygt)-(rs[6]*ygd[6])/(rga-rs[6]))
+        Pb = (((rga*np.exp(-C3*(api/(t+460))))/(C1*ygt)))**(1/C2)
+        ygd=np.zeros(6)
+        ygd[0]=ygt
+        rs=np.zeros(6)
+        for i in range (1,6,1):
+            #print("iteracion",i)
+            rs[i] =ygd[i-1]*C1*(p**C2)*np.exp(C3*(api/(t+460)))
+            #print("relacion solubilidad",rs)
+            ygd[i] = .25+.02*api+((rs[i]*.000001)*(0.6874-(3.5864*api)))
+            #print("densidad del gas disuleto",ygd)
+        #print("valor de rs en posicion 5",rs[5])
+        #print("valor de ygd en posicion 5",ygd[5])
+        ygl = (((rga*ygt)-(rs[5]*ygd[5]))/(rga-rs[5]))
+        #print("valor de ygl",ygl)
+        C4 = .000467; C5 = .000011; C6 = .000000001377;
+        Bo = 1+(C4*rs[5])+((t+460)*(api/ygd[5])*(C5+(C6*rs[5])))
+        print("Factor volumetrico del aceite",Bo)
+
+
+    else:
+        C1 = 0.03062; C2 = 1.0937; C3 = 25.724;
+        Pb = (((rga*np.exp(-C3*(api/(t+460))))/(C1*ygt)))*(1/C2)
+        ygd=np.zeros(6)
+        ygd[0]=ygt
+        rs=np.zeros(6)
+        for i in range (1,6,1):
+            #print("iteracion",i)
+            rs[i] =ygd[i-1]*C1*(p**C2)*np.exp(C3*(api/(t+460)))
+            #print("relacion solubilidad",rs)
+            ygd[i] = .25+.02*api+((rs[i]*.000001)*(0.6874-(3.5864*api)))
+            #print("densidad del gas disuleto",ygd)
+        #print("valor de rs en posicion 5",rs[5])
+        #print("valor de ygd en posicion 5",ygd[5])
+        ygl = (((rga*ygt)-(rs[5]*ygd[5]))/(rga-rs[5]))
+        #print("valor de ygl",ygl)
+        C4 = .000467; C5 = .000011; C6 = .000000001377;
+        Bo = 1+(C4*rs[5])+((t+460)*(api/ygd[5])*(C5+(C6*rs[5])))
+        print("Factor volumetrico del aceite",Bo)
+    return(ygd[5],rs[5],Bo)
 
 
 
-def propiedades_standing (profundidad, celda, ti_cabeza, ti_fondo, presion_cabeza,qo,api,ygt,rga,rugosidadpendiente,constanteT):
-    pass
+def propiedades_standing (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugosidad,pendiente,constanteT):
+    Pb = 18.2*(((rga/ygt)**0.83)*(10**((.00091*t)-(0.0125*api)))-1.4)
+    #print("\n\nPresion de burubuja por Stading",Pb)
+    ygd = np.zeros(6)
+    rs = np.zeros(6)
+    ygd[0] = ygt
+    for i in range (1,6,1):
+        #print("iteracion",i)
+        rs[i] =ygd[i-1]*((((p/18.2)+1.4)*(10**((.0125*api)-(.00091*t))))**(1/.83))
+        #print("relacion solubilidad",rs)
+        ygd[i] = .25+(.02*api)+((rs[i]*.000001)*(0.6874-(3.5864*api)))
+        #print("densidad del gas disuleto",ygd)
+    #print("valor de rs en posicion 5",rs[5])
+    #print("valor de ygd en posicion 5",ygd[5])
+    ygl = (((rga*ygt)-(rs[5]*ygd[5]))/(rga-rs[5]))
+    #print("valor de ygl",ygl)
+    yo=141.5/(api+131.5)
+    Bo = .9759+.00012*((rs[5]*((ygd[5]/yo)**.5)+(1.25*t))**1.2)
+    #print("Factor volumetrico del aceite",Bo)   
+    return(ygd[5],rs[5],Bo)
 
 
 def beggs():
