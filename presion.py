@@ -176,6 +176,31 @@ def propiedades_standing (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugo
     #print("Factor volumetrico del aceite",Bo)   
     return(ygd[5],rs[5],Bo)
 
+def densidad_aceite(p,Pb,ygd,rs,Bo,yo,RGA,t,ygt,API):
+    if p<Pb:
+        densidad_aceite = ((yo*62.4)+(ygd*.0764*rs))/Bo
+    else:
+        densob = ((yo*62.4)+(ygd*.0764*RGA))/Bo
+        Co = (-1.433+(5*RGA)+(17.2*t)-(1180*ygt)+(12.61*API))/(p*100000)
+        densidad_aceite = densob*(np.exp(Co*(p-Pb)))
+    return(densidad_aceite)
+
+def viscosidades (p,Pb,rs,t,API):
+    if p<Pb:
+        x = (10**(3.0324-(.02023*API)))/(t**(1.163))
+        viscod = (10**x)-1
+        b = 5.44*((rs+150)**-.338)
+        visco_aceite = (10.715*((rs+100)**-5.15))*(viscod**b)
+    
+    else:
+        x = (10**(3.0324-(.02023*API)))/(t**(1.163))
+        viscod = (10**x)-1
+        b = 5.44*((rs+150)**-.338)
+        visco_b = (10.715*((rs+100)**-5.15))*(viscod**b)
+        a = (-3.9*.00001*p)-5
+        m = 2.67*(p**1.187)*(10**a)
+        visco_aceite = visco_b * ((p/Pb)**m)
+    return (visco_aceite)
 
 def beggs():
     pass
