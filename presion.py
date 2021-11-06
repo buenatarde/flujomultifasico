@@ -61,6 +61,10 @@ def run():
     api = float(api)
     assert api >= float(10.0) and api <= float(100.0), "\n\nPor favor ingresa valores dentro del rango" 
 
+    qg = input("\n¿Cual es el gasto de gas en millones de pies cubicos por dia del pozo?:\t")
+    assert qg.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    qg = float(qg)
+
     ygt = input("\n¿Cual es la densidad relativa del gas total (los valores van entre 0 y 1)?:\t")
     assert ygt.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos o valores dentro del rango"
     ygt = float(ygt)
@@ -75,6 +79,11 @@ def run():
     assert rugosidad.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
     rugosidad = float(rugosidad)
     assert rugosidad >= float(0.0), "\n\nPor favor ingresa valores dentro del rango"   
+
+    diametro = input("\n¿Cual es el diametro de la tuberia (en pulgadas)?:\t")
+    assert diametro.replace(".","",1).isdigit(), "\n\nPor favor ingresa valores numericos"
+    diametro = float(diametro)
+    assert rugosidad >= float(0.0), "\n\nPor favor ingresa valores dentro del rango" 
 
  
 #Se empiezan a hacer calculos que comparte los dos metodos para evitar un mayor uso de poder de calculo desperdiciado
@@ -154,7 +163,6 @@ def propiedades_vazquez (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugos
     return(ygd[5],rs[5],Bo)
 
 
-
 def propiedades_standing (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugosidad,pendiente,constanteT):
     Pb = 18.2*(((rga/ygt)**0.83)*(10**((.00091*t)-(0.0125*api)))-1.4)
     #print("\n\nPresion de burubuja por Stading",Pb)
@@ -176,6 +184,7 @@ def propiedades_standing (profundidad, celda, ti_cabeza, t,p,qo,api,ygt,rga,rugo
     #print("Factor volumetrico del aceite",Bo)   
     return(ygd[5],rs[5],Bo)
 
+
 def densidad_aceite(p,Pb,ygd,rs,Bo,yo,RGA,t,ygt,API):
     if p<Pb:
         densidad_aceite = ((yo*62.4)+(ygd*.0764*rs))/Bo
@@ -184,6 +193,7 @@ def densidad_aceite(p,Pb,ygd,rs,Bo,yo,RGA,t,ygt,API):
         Co = (-1.433+(5*RGA)+(17.2*t)-(1180*ygt)+(12.61*API))/(p*100000)
         densidad_aceite = densob*(np.exp(Co*(p-Pb)))
     return(densidad_aceite)
+
 
 def viscosidades (p,Pb,rs,t,API):
     if p<Pb:
@@ -202,8 +212,54 @@ def viscosidades (p,Pb,rs,t,API):
         visco_aceite = visco_b * ((p/Pb)**m)
     return (visco_aceite)
 
-def beggs():
-    pass
+
+def propiedades_gas(t,p,ygl,):
+    Tpc = 168+(325*ygl)-(12.5*ygl*ygl)
+    Ppc = 677+(15*ygl)-(37.5*ygl*ygl)
+
+    Tpr = t/Tpc
+    Ppr = p/Ppc
+
+    z = 1-((3.53*Ppr)/(10**(0.9813*Tpr))) + ((0.274*Ppr*Ppr)/(10**(0.8157*Tpr)))
+
+    t_abs=t+459.67
+
+    Bg = ((t_abs*z)/p)*.0282
+
+    dens_g = (ygl*0.0764)/Bg
+
+    x = 3.5 + (986/t_abs) + (0.2896*t_abs)
+    y = 2.4-(0.2*x) 
+    k = ((9.4+(0.5792*ygl))*(t**1.5))/((209+(550.24*ygl))+t_abs)
+    visco_g = (k*.0001)*(np.exp(x*((dens_g/62.4)**y)))
+
+    return(visco_g,Bg,dens_g)
+
+
+def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT):
+    #Primeros paosos para determinar la velocidad superficial del liquido 
+    diametro = diametro/12
+    At = np.pi(1)*(diametro**2)*.25 #esto esta en pies cuadrados
+    vsg = qg/At
+    vsg = vsg/86400
+    
+    qo = qo*(5.615/86400)
+    vsl = qo/At
+
+    vm = vsl+vsg
+
+    fracc_l = vsl/vm
+
+    #Calculos para inicar con la correlacion
+    L1 = 316*(fracc_l**0.302)
+    L2 = 0.000925*(fracc_l**-2.468)
+    L3 = 0.1*(fracc_l**-1.452)
+    L4 = 0.5*(fracc_l**6.738)
+    Nfr = (vm**2)/(diametro*32.2)
+
+    
+
+
 
 
 if __name__ == "__main__":
