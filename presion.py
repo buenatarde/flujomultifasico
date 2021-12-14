@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib as plt
 import pandas as pd
 
-from prueba import Bo
+#from prueba import Bo
 
 
 def run():
@@ -256,6 +256,41 @@ def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT):
     L3 = 0.1*(fracc_l**-1.452)
     L4 = 0.5*(fracc_l**6.738)
     Nfr = (vm**2)/(diametro*32.2)
+
+    #Determina
+    if (fracc_l<0.01 and Nfr < L1) or (fracc_l >= 0.01 and Nfr<L2):
+        patron_flujo=str("Segregado")
+
+    elif (fracc_l>=0.01 and L2<=Nfr and Nfr<=L3):
+        patron_flujo=str("Transicion")
+
+    elif (0.01<=fracc_l and fracc_l<0.04 and L3<Nfr and Nfr<=L1) or (fracc_l>=0.4 and L3<Nfr and Nfr<=L4):
+        patron_flujo=str("Intermitente")
+
+    elif (fracc_l<0.4 and Nfr>=L1) or (fracc_l>=0.4 and Nfr>L4):
+        patron_flujo=str("Distribuido")
+    else:
+        print("Hubo un error en los datos favor de checarlos nuevamente")
+    
+    #Empieza la prediccion del Colgamiento
+
+    if patron_flujo == "Segregado":
+        a=0.98; b=0.4846; c=0.0868
+    elif patron_flujo == "Intermitente":
+        a=0.845; b=0.5351; c=0.0173
+    elif patron_flujo == "Distribuido":
+        a=1.0659; b=0.5824; c=0.0609
+    else:
+        a1=0.98; b1=0.4846; c1=0.0868; a2=0.845; b2=0.5351; c2=0.0173
+    
+    #Empieza los calculos para el Colgamiento
+
+    
+
+
+    
+
+
 
     
 
