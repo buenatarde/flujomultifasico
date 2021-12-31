@@ -192,7 +192,8 @@ def densidad_aceite(p,Pb,ygd,rs,Bo,yo,RGA,t,ygt,API):
         densob = ((yo*62.4)+(ygd*.0764*RGA))/Bo
         Co = (-1.433+(5*RGA)+(17.2*t)-(1180*ygt)+(12.61*API))/(p*100000)
         densidad_aceite = densob*(np.exp(Co*(p-Pb)))
-    return(densidad_aceite)
+    sigmao = (42.4-(0.047*t)-(.267*API))*(np.exp(-0.0007*p))
+    return(densidad_aceite,sigmao)
 
 
 def viscosidades (p,Pb,rs,t,API):
@@ -236,7 +237,7 @@ def propiedades_gas(t,p,ygl,):
     return(visco_g,Bg,dens_g)
 
 
-def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT):
+def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT,densidad_aceite,sigmao):
     #Primeros paosos para determinar la velocidad superficial del liquido 
     diametro = diametro/12
     At = np.pi(1)*(diametro**2)*.25 #esto esta en pies cuadrados
@@ -259,31 +260,84 @@ def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT):
 
     #Determina
     if (fracc_l<0.01 and Nfr < L1) or (fracc_l >= 0.01 and Nfr<L2):
-        patron_flujo=str("Segregado")
+        patron_flujo = str("Segregado")
 
-    elif (fracc_l>=0.01 and L2<=Nfr and Nfr<=L3):
-        patron_flujo=str("Transicion")
+    elif (fracc_l >= 0.01 and L2 <= Nfr and Nfr <= L3):
+        patron_flujo = str("Transicion")
 
-    elif (0.01<=fracc_l and fracc_l<0.04 and L3<Nfr and Nfr<=L1) or (fracc_l>=0.4 and L3<Nfr and Nfr<=L4):
-        patron_flujo=str("Intermitente")
+    elif (0.01 <= fracc_l and fracc_l < 0.04 and L3 < Nfr and Nfr <= L1) or (fracc_l >= 0.4 and L3 < Nfr and Nfr <= L4):
+        patron_flujo = str("Intermitente")
 
-    elif (fracc_l<0.4 and Nfr>=L1) or (fracc_l>=0.4 and Nfr>L4):
-        patron_flujo=str("Distribuido")
+    elif (fracc_l < 0.4 and Nfr >= L1) or (fracc_l >= 0.4 and Nfr > L4):
+        patron_flujo = str("Distribuido")
     else:
         print("Hubo un error en los datos favor de checarlos nuevamente")
     
     #Empieza la prediccion del Colgamiento
 
     if patron_flujo == "Segregado":
-        a=0.98; b=0.4846; c=0.0868
+        a = 0.98; b = 0.4846; c = 0.0868
     elif patron_flujo == "Intermitente":
-        a=0.845; b=0.5351; c=0.0173
+        a = 0.845; b = 0.5351; c = 0.0173
     elif patron_flujo == "Distribuido":
-        a=1.0659; b=0.5824; c=0.0609
+        a = 1.0659; b = 0.5824; c = 0.0609
+    else: #Este es el de Transicion 
+        a1 = 0.98; b1 = 0.4846; c1 = 0.0868; a2 = 0.845; b2 = 0.5351; c2 = 0.0173
+
+    if patron_flujo == "Transicion":
+        Hls = ((a1*(fracc_l**b1))/(Nfr**c1))
+        Hli = ((a2*(fracc_l**b2))/(Nfr**c2))
     else:
-        a1=0.98; b1=0.4846; c1=0.0868; a2=0.845; b2=0.5351; c2=0.0173
+        Hl = ((a*(fracc_l**b))/(Nfr**c))
     
     #Empieza los calculos para el Colgamiento
+
+    if patron_flujo == "Segregado":
+        e=0.011; f=-3.768; g=3.539; h=-1.614
+    elif patron_flujo == "Intermitente":
+        e=2.96; f=0.305; g=-0.4473; h=0.0978
+    elif patron_flujo == "Distribuido":
+        e=0.011; f=-3.768; g=3.539; h=-1.614
+    else: #Este es el de Transicion
+        es=0.011; fs=-3.768; gs=3.539; hs=-1.614
+        ei=2.96; fi=0.305; gi=-0.4473; hi=0.0978
+    
+    Nlv = 1.938*vsl*((densidad_aceite/sigmao)**0.25)
+
+    if patron_flujo == "Distribuido":
+        C = 0; psi = 1
+        Hl=Hl
+
+    elif patron_flujo == "Transicion":
+        Cs = (1-fracc_l)*np.ln(es*(fracc_l**fs)*(Nlv**gs)*(Nfr**hs))
+        Ci = (1-fracc_l)*np.ln(ei*(fracc_l**fi)*(Nlv**gi)*(Nfr**hi))
+
+        psis = 1 + Cs
+        psii = 1 + Ci
+
+        A = (L3-Nfr)/(L3-L4)
+
+        Hls_psis = Hls*psis; Hli_psii = Hli*psii
+
+        Hl = (A*Hls_psis) + ((1+A)*Hli_psii)
+
+    else:
+        C = (1-fracc_l)*np.ln(e*(fracc_l**f)*(Nlv**g)*(Nfr**h))
+        psi = 1 + C
+
+        Hl = Hl*psi
+
+    #Calculo del Factor de Friccion
+
+    ftp = 1
+
+
+
+    
+    
+
+
+
 
     
 
