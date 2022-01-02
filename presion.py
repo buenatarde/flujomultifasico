@@ -237,9 +237,9 @@ def propiedades_gas(t,p,ygl,):
     return(visco_g,Bg,dens_g)
 
 
-def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT,densidad_aceite,sigmao):
+def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT,densidad_aceite,sigmao,dens_g,visco_g,visco_aceite):
     #Primeros paosos para determinar la velocidad superficial del liquido 
-    diametro = diametro/12
+    diametro = diametro/12 #diametro en pulgadas
     At = np.pi(1)*(diametro**2)*.25 #esto esta en pies cuadrados
     vsg = qg/At
     vsg = vsg/86400
@@ -329,9 +329,33 @@ def beggs(qg,diametro,rugosidad,t,p,qo,api,ygt,rga,pendiente,constanteT,densidad
 
     #Calculo del Factor de Friccion
 
-    ftp = 1
+    dens_ns = (densidad_aceite*fracc_l)+(dens_g*(1-fracc_l))
+    visco_ns = (visco_aceite*fracc_l) + (visco_g*(1-fracc_l))
 
+    Nre = 1488*((dens_ns*vm*diametro*12)/(visco_ns))
 
+    fns=np.zeros(10)
+    fns[0]=5.5
+
+    for i in range (1,10,1):
+        fns[i] = (-2*np.log10((rugosidad/(3.71*diametro))+(2.514/(Nre*(fns[i-1]**.5)))))**-2
+    fns = fns[9]
+
+    y = fracc_l/ (Hl**2)
+    
+    if y<1 and y<1.2: 
+        s = np.log((2.2*y)-1.2)
+    else:
+        s = (np.log(y))/(-.5023+(3.182*np.log(y))-(.8725*np.log(y)**2)+(.01853*np.log(y)**3))
+
+    ftp_fns = np.exp(s)
+    ftp = ftp_fns*fns
+
+    dens_m = (densidad_aceite*Hl) + (dens_g*(1-Hl))
+
+    dp_dx = (1/144)*((ftp*dens_ns*vm*vm)/(2*diametro*12*32.2))
+
+    return(dp_dx)
 
     
     
